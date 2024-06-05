@@ -20,7 +20,7 @@ composer require liweishan/ffmpeg-helper 1.0
     //------截取视频指定帧------
     $from = '/Users/lws/Desktop/111.mp4';
     $to = '/Users/lws/Desktop/111.png';
-    $res = FFmpegHelper::getCoverImage($from, $to, 1);
+    $res = FFmpegHelper::getVideoCoverImage($from, $to, 1);
     var_dump($res);die;
 
 ```

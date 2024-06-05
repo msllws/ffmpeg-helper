@@ -16,6 +16,10 @@
   "autoload": {
     "psr-4": {
       "Lws\\": "src/"
-    }
+    },
+    "files": [
+      "src/Functions/helpers.php",
+      "src/Consts/Command.php"
+    ]
   }
 }
