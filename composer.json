@@ -1,0 +1,21 @@
+{
+  "name": "liweishan/ffmpeg-helper",
+  "description": "This is a ffmpeg develop helper for PHP.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "liweishan",
+      "email": "msllws@163.com"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {
+    "php":">=7.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Lws\\": "src/"
+    }
+  }
+}
