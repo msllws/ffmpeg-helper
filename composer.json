@@ -1,6 +1,6 @@
 {
   "name": "liweishan/ffmpeg-helper",
-  "description": "This is a ffmpeg develop helper for PHP.",
+  "description": "This is a ffmpeg helper for PHP.",
   "type": "library",
   "license": "MIT",
   "authors": [
