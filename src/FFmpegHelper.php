@@ -7,8 +7,8 @@ require_once __DIR__ . '/../vendor/autoload.php';
 class FFmpegHelper
 {
     //配置ffmpeg命令路径
-    public static string $ffmpegPath;
-    public static string $ffprobePath;
+    public static string $ffmpegPath = 'ffmpeg';
+    public static string $ffprobePath = 'ffprobe';
 
     //配置信息
     public static function setConfig($config): void
@@ -226,17 +226,3 @@ class FFmpegHelper
         return $res['code'] === 0;
     }
 }
-
-FFmpegHelper::setConfig([
-    'ffmpegPath' => '/opt/homebrew/bin/ffmpeg',
-    'ffprobePath' => '/opt/homebrew/bin/ffprobe'
-]);
-$from = '/Users/lws/Desktop/111.mp4';
-$to = '/Users/lws/Desktop/333.png';
-$img = '/Users/lws/Desktop/111.gif';
-$music = '/Users/lws/Desktop/111.mp3';
-
-$res = FFmpegHelper::exec('%s -y -i %s -ss %s -vframes 1 %s', '/opt/homebrew/bin/ffmpeg', $from, '00:00:00.000', $to);
-
-$res = FFmpegHelper::exec('/opt/homebrew/bin/ffmpeg -y -i /Users/lws/Desktop/111.mp4 -ss 00:00:00.000 -vframes 1 /Users/lws/Desktop/333.png');
-var_dump($res);
