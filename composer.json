@@ -1,6 +1,10 @@
 {
   "name": "liweishan/ffmpeg-helper",
   "description": "This is a ffmpeg helper for PHP.",
+  "keywords": [
+    "php",
+    "ffmpeg"
+  ],
   "type": "library",
   "license": "Apache-2.0",
   "authors": [
