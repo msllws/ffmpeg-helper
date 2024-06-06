@@ -18,3 +18,8 @@ const CONVERT_MUSIC = '%s -i %s -vn -c:a libmp3lame -qscale:a 2 %s';
 /** 视频格式转换 **/
 const CONVERT_VIDEO = '%s -i %s -c:v libx264 -preset slow -crf 23 -c:a aac -b:a 128k %s';
 
+/** 合并音频 **/
+const CONCAT_MUSIC = '%s -i concat:\'%s\' -c copy %s';
+
+/** 合并视频 **/
+const CONCAT_VIDEO = '%s -safe 0 -f concat -i %s -c copy %s';

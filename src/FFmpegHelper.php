@@ -27,11 +27,13 @@ class FFmpegHelper
      */
     public static function getVideoCoverImage($from, $to, $frameNum = 1, $timeStamp = null): bool
     {
+        if (file_exists($to)) unlink($to);
+
         //判断根据时间还是第几帧取
-        if(empty($timeStamp)){
-            if($frameNum == 1){
+        if (empty($timeStamp)) {
+            if ($frameNum == 1) {
                 $timeStamp = '00:00:00.000';
-            }else{
+            } else {
                 //帧率
                 $frameRate = self::getVideoFrameRate($from);
                 //根据帧率 计算指定帧出现时间
@@ -49,7 +51,7 @@ class FFmpegHelper
     public static function getVideoFrameRate($path): int
     {
         $res = doExec(GET_FRAME_RATE, self::$ffprobePath, $path);
-        if($res['code'] === 0){
+        if ($res['code'] === 0) {
             return (int)explode('/', $res['data'][0])[0];
         }
         return 0;
@@ -67,7 +69,7 @@ class FFmpegHelper
         $duration = $res['code'] === 0 ? floatval(trim($res['data'][0])) : 0;
         return [
             'duration' => $duration, //时长 单位：秒
-            'size' => round((filesize($path) / 1024 /1024) , 2) //大小 单位：MB
+            'size' => round((filesize($path) / 1024 / 1024), 2) //大小 单位：MB
         ];
     }
 
@@ -79,10 +81,9 @@ class FFmpegHelper
      * @param string $duration 截取时长，格式HH:MM:SS
      * @return bool
      */
-    public static function cutVideo($from, $to, $startTime, $duration) {
-        if(file_exists($to)){
-            unlink($to);
-        }
+    public static function cutVideo($from, $to, $startTime, $duration): bool
+    {
+        if (file_exists($to)) unlink($to);
         return doExec(CUT_VIDEO, self::$ffmpegPath, $from, $startTime, $duration, $to)['code'] === 0;
     }
 
@@ -92,7 +93,9 @@ class FFmpegHelper
      * @param string $to 目标音频文件
      * @return bool
      */
-    public static function convertMusic($from, $to) {
+    public static function convertMusic($from, $to): bool
+    {
+        if (file_exists($to)) unlink($to);
         return doExec(CONVERT_MUSIC, self::$ffmpegPath, $from, $to)['code'] === 0;
     }
 
@@ -102,17 +105,51 @@ class FFmpegHelper
      * @param string $to 目标视频文件
      * @return bool
      */
-    public static function convertVideo($from, $to) {
+    public static function convertVideo($from, $to): bool
+    {
+        if (file_exists($to)) unlink($to);
         return doExec(CONVERT_VIDEO, self::$ffmpegPath, $from, $to)['code'] === 0;
     }
 
-}
+    /**
+     * 合并音频
+     *
+     * @param array $paths 音频文件数组
+     * @param string $to 目标文件路径
+     * @return bool
+     */
+    public static function concatMusics($paths, $to): bool
+    {
+        if (file_exists($to)) unlink($to);
+        $audioList = implode("|", array_map('escapeshellarg', $paths));
+        return doExec(CONCAT_MUSIC, self::$ffmpegPath, $audioList, $to)['code'] === 0;
+    }
 
-FFmpegHelper::setConfig([
-    'ffmpegPath' => '/opt/homebrew/bin/ffmpeg',
-    'ffprobePath' => '/opt/homebrew/bin/ffprobe'
-]);
-$from = '/Users/lws/Desktop/111.mp4';
-$to = '/Users/lws/Desktop/111.avi';
-$res = FFmpegHelper::convertVideo($from, $to);
-var_dump($res);die;
+    /**
+     * 合并视频
+     *
+     * @param array $paths 视频文件数组
+     * @param string $to 目标文件路径
+     * @return bool
+     */
+    public static function concatVideos($paths, $to): bool
+    {
+        if (file_exists($to)) unlink($to);
+        //创建视频列表临时文件
+        $tempFilePath = tempnam(sys_get_temp_dir(), 'ffmpeg-helper_temp_list.txt');
+        //打开临时文件并写入文件列表
+        $videoListContent = '';
+        foreach ($paths as $videoFile) {
+            $videoListContent .= "file '$videoFile'\n";
+        }
+        if (file_put_contents($tempFilePath, $videoListContent) === false) {
+            unlink($tempFilePath); // 清理临时文件
+            echo "FFmpegHelper==Failed to write to temp file";
+            return false;
+        }
+        $res = doExec(CONCAT_VIDEO, self::$ffmpegPath, $tempFilePath, $to)['code'];
+        unlink($tempFilePath); // 清理临时文件
+        return $res === 0;
+    }
+
+}

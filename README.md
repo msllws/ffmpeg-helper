@@ -34,7 +34,7 @@ composer require liweishan/ffmpeg-helper
     //视频裁切
     $from = '/Users/lws/Desktop/111.mp4';
     $to = '/Users/lws/Desktop/222.mp4';
-    $res = FFmpegHelper::cutVideo($from, $to, '0.0.0.0', $duration):
+    $res = FFmpegHelper::cutVideo($from, $to, '0.0.0.0', '0.0.0.15'):
     var_dump($res);die;
         
     //音频格式转换
@@ -47,6 +47,24 @@ composer require liweishan/ffmpeg-helper
     $from = '/Users/lws/Desktop/111.mp4';
     $to = '/Users/lws/Desktop/111.avi';
     $res = FFmpegHelper::convertVideo($from, $to);
+    var_dump($res);die;
+    
+    //合并音频
+    $paths = [
+        '/Users/lws/Desktop/111.mp3',
+        '/Users/lws/Desktop/222.mp3',
+    ];
+    $to = '/Users/lws/Desktop/333.mp3';
+    $res = FFmpegHelper::concatMusics($paths,$to);
+    var_dump($res);die;
+    
+    //合并视频
+    $paths = [
+        '/Users/lws/Desktop/111.mp4',
+        '/Users/lws/Desktop/222.mp4',
+    ];
+    $to = '/Users/lws/Desktop/333.mp4';
+    $res = FFmpegHelper::concatVideos($paths,$to);
     var_dump($res);die;
 
 ```

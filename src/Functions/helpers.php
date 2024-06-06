@@ -5,10 +5,10 @@ if (!function_exists('doExec')) {
     function doExec(string $command, ...$args): array
     {
         //构造命令
-        $escapedArgs = array_map('escapeshellarg', $args);
-        $command = vsprintf($command, $escapedArgs);
+        $command = sprintf($command, ...$args);
+        $command = stripslashes($command);
+        echo 'FFmpegHelper==command=='.$command."\n";
         try {
-            echo $command."\n";
             exec($command, $output, $return_code);
             return [
                 'code' => $return_code,
