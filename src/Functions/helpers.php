@@ -5,8 +5,10 @@ if (!function_exists('doExec')) {
     function doExec(string $command, ...$args): array
     {
         //构造命令
-        $command = sprintf($command, ...$args);
-        $command = stripslashes($command);
+        if (count($args) > 0) {
+            $command = sprintf($command, ...$args);
+            $command = stripslashes($command);
+        }
         echo 'FFmpegHelper==command=='.$command."\n";
         try {
             exec($command, $output, $return_code);
@@ -44,6 +46,18 @@ if (!function_exists('getFrameTime')) {
             // 格式化为HH:MM:SS.mmm
             return str_pad($hours, 2, '0', STR_PAD_LEFT) . ':' . str_pad($minutes, 2, '0', STR_PAD_LEFT) . ':' . str_pad($seconds, 2, '0', STR_PAD_LEFT) . '.' . str_pad($milliseconds, 3, '0', STR_PAD_LEFT);
         }
+    }
+}
+
+//根据文件名 获取新的随机文件地址 保留原文件格式
+if (!function_exists('getNewFile')) {
+    function getNewFile(string $path): string
+    {
+        //获取原始文件的扩展名
+        $ext = pathinfo($path, PATHINFO_EXTENSION);
+        //创建一个新的临时文件
+        $to = tempnam(sys_get_temp_dir(), 'file_') . '.' . $ext;
+        return $to;
     }
 }
 

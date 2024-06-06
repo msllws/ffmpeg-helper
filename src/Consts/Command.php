@@ -23,3 +23,17 @@ const CONCAT_MUSIC = '%s -i concat:\'%s\' -c copy %s';
 
 /** 合并视频 **/
 const CONCAT_VIDEO = '%s -safe 0 -f concat -i %s -c copy %s';
+
+/** 获取视频流信息 **/
+const VIDEO_STREAMS = '%s -v error -show_streams -print_format json %s';
+
+/** 视频添加音频流信息 **/
+const VIDEO_ADD_SOUND_STREAMS = '%s -i %s -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=44100 -c:v copy -map 0:v:0 -map 1:a:0 -shortest %s';
+
+/** 视频添加图片 **/
+const VIDEO_ADD_IMAGE = "%s -i %s %s -i %s -filter_complex \"[0:v][1:v]overlay=x=%s:y=%s%s\" %s -y %s";
+
+/** 视频添加音频 **/
+const VIDEO_ADD_MUSIC = "%s -i %s -i %s -filter_complex \"[0:a]volume=1[0];[1:a]volume=1[1];[0][1]amix=inputs=2\" -y %s";
+
+

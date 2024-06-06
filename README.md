@@ -66,5 +66,46 @@ composer require liweishan/ffmpeg-helper
     $to = '/Users/lws/Desktop/333.mp4';
     $res = FFmpegHelper::concatVideos($paths,$to);
     var_dump($res);die;
+    
+    //校验视频流 生成音轨（如果返回新的文件路径 用完记得删除）
+    $from = '/Users/lws/Desktop/111.mp4';
+    $res = FFmpegHelper::checkVideoStreams($from);
+    var_dump($res);
+    
+    //视频添加图片
+    $from = '/Users/lws/Desktop/111.mp4';
+    $to = '/Users/lws/Desktop/222.mp4';
+    $img = '/Users/lws/Desktop/111.gif';
+    $res = FFmpegHelper::videoAddImage($from, $to, $img, 0, '220', '400');
+    var_dump($res);
+    
+    //视频添加音频
+    $from = '/Users/lws/Desktop/111.mp4';
+    $to = '/Users/lws/Desktop/222.mp4';
+    $music = '/Users/lws/Desktop/111.mp3';
+    $res = FFmpegHelper::videoAddMusic($from, $to, $music);
+    var_dump($res);
+
+
+```
+
+### 执行自定义命令
+
+```php
+    
+    //方式一：命令(参数用%s占位) + 可变参数
+    $ffmpegPath = '/opt/homebrew/bin/ffmpeg';
+    $from = '/Users/lws/Desktop/111.mp4';
+    $to = '/Users/lws/Desktop/111.png';
+    $timeStamp = '00:00:00.000';
+    $res = FFmpegHelper::exec('%s -y -i %s -ss %s -vframes 1 %s', $ffmpegPath, $from, $timeStamp, $to);
+    var_dump($res);
+    
+    //方式二：纯命令
+    $res = FFmpegHelper::exec('/opt/homebrew/bin/ffmpeg -y -i /Users/lws/Desktop/111.mp4 -ss 00:00:00.000 -vframes 1 /Users/lws/Desktop/333.png');
+    var_dump($res);
+    
+    //返回数组格式
+    ['code' => 0, 'data' => []]
 
 ```
