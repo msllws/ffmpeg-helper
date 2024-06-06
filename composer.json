@@ -2,7 +2,7 @@
   "name": "liweishan/ffmpeg-helper",
   "description": "This is a ffmpeg helper for PHP.",
   "type": "library",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "authors": [
     {
       "name": "liweishan",

@@ -3,6 +3,7 @@
 namespace Lws;
 
 require_once __DIR__ . '/../vendor/autoload.php';
+
 class FFmpegHelper
 {
     //配置ffmpeg命令路径
@@ -85,4 +86,33 @@ class FFmpegHelper
         return doExec(CUT_VIDEO, self::$ffmpegPath, $from, $startTime, $duration, $to)['code'] === 0;
     }
 
+    /**
+     * 音频格式转换
+     * @param string $from 原音频文件
+     * @param string $to 目标音频文件
+     * @return bool
+     */
+    public static function convertMusic($from, $to) {
+        return doExec(CONVERT_MUSIC, self::$ffmpegPath, $from, $to)['code'] === 0;
+    }
+
+    /**
+     * 视频格式转换
+     * @param string $from 原视频文件
+     * @param string $to 目标视频文件
+     * @return bool
+     */
+    public static function convertVideo($from, $to) {
+        return doExec(CONVERT_VIDEO, self::$ffmpegPath, $from, $to)['code'] === 0;
+    }
+
 }
+
+FFmpegHelper::setConfig([
+    'ffmpegPath' => '/opt/homebrew/bin/ffmpeg',
+    'ffprobePath' => '/opt/homebrew/bin/ffprobe'
+]);
+$from = '/Users/lws/Desktop/111.mp4';
+$to = '/Users/lws/Desktop/111.avi';
+$res = FFmpegHelper::convertVideo($from, $to);
+var_dump($res);die;

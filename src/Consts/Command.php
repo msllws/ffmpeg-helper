@@ -12,3 +12,9 @@ const GET_VIDEO_DURATION = '%s -v error -show_entries format=duration -of defaul
 /** 裁切视频 **/
 const CUT_VIDEO = '%s -i %s -ss %s -t %s -c copy %s';
 
+/** 音频格式转换 **/
+const CONVERT_MUSIC = '%s -i %s -vn -c:a libmp3lame -qscale:a 2 %s';
+
+/** 视频格式转换 **/
+const CONVERT_VIDEO = '%s -i %s -c:v libx264 -preset slow -crf 23 -c:a aac -b:a 128k %s';
+
