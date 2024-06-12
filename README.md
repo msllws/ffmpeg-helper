@@ -85,6 +85,26 @@ composer require liweishan/ffmpeg-helper
     $music = '/Users/lws/Desktop/111.mp3';
     $res = FFmpegHelper::videoAddMusic($from, $to, $music);
     var_dump($res);
+    
+    //视频叠加视频
+    $from = '/Users/lws/Desktop/111.mp4';
+    $video = '/Users/lws/Desktop/222.mp4';
+    $to = '/Users/lws/Desktop/333.mp4';
+    $res = FFmpegHelper::videoAddVideo($from, $to, $video, '200', '200', 'right');
+    var_dump($res);die;
+
+    //视频合并添加叠加转场特效
+    $path1 = '/Users/lws/Desktop/111.mp4';
+    $path2 = '/Users/lws/Desktop/222.mp4';
+    $to = '/Users/lws/Desktop/333.mp4';
+    $res = FFmpegHelper::videoAddXfade($path1, $path2, $to, 'fadeblack');
+    var_dump($res);die;
+    
+    //设置视频速率
+    $from = '/Users/lws/Desktop/111.mp4';
+    $to = '/Users/lws/Desktop/222.mp4';
+    $res = FFmpegHelper::setVideRate($from, $to, 0.5);
+    var_dump($res);die;
 
 
 ```

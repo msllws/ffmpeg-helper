@@ -38,8 +38,6 @@ class FFmpegHelper
      */
     public static function getVideoCoverImage($from, $to, $frameNum = 1, $timeStamp = null): bool
     {
-        if (file_exists($to)) unlink($to);
-
         //判断根据时间还是第几帧取
         if (empty($timeStamp)) {
             if ($frameNum == 1) {
@@ -95,7 +93,6 @@ class FFmpegHelper
      */
     public static function cutVideo($from, $to, $startTime, $duration): bool
     {
-        if (file_exists($to)) unlink($to);
         $res = doExec(CUT_VIDEO, self::$ffmpegPath, $from, $startTime, $duration, $to);
         return $res['code'] === 0;
     }
@@ -108,7 +105,6 @@ class FFmpegHelper
      */
     public static function convertMusic($from, $to): bool
     {
-        if (file_exists($to)) unlink($to);
         $res = doExec(CONVERT_MUSIC, self::$ffmpegPath, $from, $to);
         return $res['code'] === 0;
     }
@@ -121,7 +117,6 @@ class FFmpegHelper
      */
     public static function convertVideo($from, $to): bool
     {
-        if (file_exists($to)) unlink($to);
         $res = doExec(CONVERT_VIDEO, self::$ffmpegPath, $from, $to);
         return $res['code'] === 0;
     }
@@ -135,7 +130,6 @@ class FFmpegHelper
      */
     public static function concatMusics($paths, $to): bool
     {
-        if (file_exists($to)) unlink($to);
         $audioList = implode("|", array_map('escapeshellarg', $paths));
         $res = doExec(CONCAT_MUSIC, self::$ffmpegPath, $audioList, $to);
         return $res['code'] === 0;
@@ -149,7 +143,6 @@ class FFmpegHelper
      */
     public static function concatVideos($paths, $to): bool
     {
-        if (file_exists($to)) unlink($to);
         //创建视频列表临时文件
         $tempFilePath = tempnam(sys_get_temp_dir(), 'ffmpeg-helper_temp_list.txt');
         //打开临时文件并写入文件列表
@@ -162,9 +155,9 @@ class FFmpegHelper
             echo "FFmpegHelper==Failed to write to temp file";
             return false;
         }
-        $res = doExec(CONCAT_VIDEO, self::$ffmpegPath, $tempFilePath, $to)['code'];
+        $res = doExec(CONCAT_VIDEO, self::$ffmpegPath, $tempFilePath, $to);
         unlink($tempFilePath); // 清理临时文件
-        return $res === 0;
+        return $res['code'] === 0;
     }
 
     /**
@@ -223,6 +216,57 @@ class FFmpegHelper
     public static function videoAddMusic($path, $to, $music) : bool
     {
         $res = doExec(VIDEO_ADD_MUSIC, self::$ffmpegPath, $path, $music, $to);
+        return $res['code'] === 0;
+    }
+
+    /**
+     * 视频叠加视频
+     * @param string $path 原视频地址
+     * @param string $to 目标视频地址
+     * @param string $video 视频地址
+     * @param string $w 宽
+     * @param string $h 高
+     * @param string $pos 位置 不传默认居中，可选left、right
+     * @param string $seconds 持续秒数
+     * @return bool
+     */
+    public static function videoAddVideo($path, $to, $video, $w, $h, $pos = null, $seconds = null) : bool
+    {
+        $x = '(main_w-overlay_w)/2';//默认居中
+        if($pos){
+            $x = ($pos == 'left') ? '0' : 'main_w-overlay_w';
+        }
+        $seconds = !empty($seconds) ? $seconds : self::getMediaInfo($path)['duration'];
+        $res = doExec(VIDEO_ADD_VIDEO, self::$ffmpegPath, $path, $video, $w, $h, $x, $seconds, $to);
+        return $res['code'] === 0;
+    }
+
+    /**
+     * 视频合并并叠加转场特效
+     * @param string $path1 原视频地址1
+     * @param string $path2 原视频地址2
+     * @param string $to 目标视频地址
+     * @param string $xfade 转场特效
+     * @return bool
+     */
+    public static function videoAddXfade($path1, $path2, $to, $xfade) : bool
+    {
+        $offset = self::getMediaInfo($path1)['duration'] - 0.6;
+        $res = doExec(VIDEO_ADD_XFADE, self::$ffmpegPath, $path1, $path2, $xfade, $offset, $to);
+        return $res['code'] === 0;
+    }
+
+    /**
+     * 设置视频速率
+     * @param string $from 原视频文件
+     * @param string $to 目标视频文件
+     * @param int $rate 几倍速率 如0.5倍速、2倍速
+     * @return bool
+     */
+    public static function setVideRate($from, $to, $rate): bool
+    {
+        $atempo = 1 / $rate;
+        $res = doExec(SET_VIDEO_RATE, self::$ffmpegPath, $from, $rate, $atempo, $to);
         return $res['code'] === 0;
     }
 }
